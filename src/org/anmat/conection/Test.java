@@ -12,14 +12,16 @@ public class Test {
 
 	public static void main(String[] args) throws MalformedURLException{
 		
-		pruebaTrazaProduct();
+		pruebaGetMedico();
+		//pruebaTrazaProduct();
 
 
 	}
 	
 	private static void pruebaTrazaProduct() {
 //		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
-		Anmat miAnmat = new Anmat("pruebasws","Clave1234");
+		Anmat miAnmat = new Anmat("pruebasws1","pruebasws");
+		miAnmat.setEnProduccion(false);
 		
 		TransaccionAnmat transaccion = new TransaccionAnmat();
 		transaccion.setfEvento("17/11/2020");
@@ -35,6 +37,8 @@ public class Test {
 		
 		miAnmat.getResponse().setKeysSoapXML("c_error");
 		miAnmat.getResponse().setKeysSoapXML("d_error");
+		miAnmat.getResponse().setKeysSoapXML("faultstring");
+		miAnmat.getResponse().setKeysSoapXML("faultcode");
 		List<TransaccionAnmat> transs = new LinkedList<TransaccionAnmat>(); 
 		transs.add(transaccion);
 		for(String mens: miAnmat.informarProducto(transs)){
@@ -43,12 +47,12 @@ public class Test {
 	}
 
 	private static void pruebaGetMedico() {
-//		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
-		Anmat miAnmat = new Anmat("pruebasws","Clave1234");
+		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
+//		Anmat miAnmat = new Anmat("pruebasws1","pruebasws");
+		//miAnmat.setEnProduccion(false);		
 		
-		
-		miAnmat.getResponse().setKeysSoapXML("c_error");
-		miAnmat.getResponse().setKeysSoapXML("d_error");
+		miAnmat.getResponse().setKeysSoapXML("apellidoNombre");
+		miAnmat.getResponse().setKeysSoapXML("nroMatricula");
 		
 		for(String mens: miAnmat.getMedico("20134739445")){
 				System.out.println(mens);

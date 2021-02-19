@@ -16,7 +16,7 @@ public class ResponseHandler {
 	
 	private List<String> keysSoapXML = new LinkedList<String>();
 	
- 
+
 	public SOAPMessage pruebasXMLParser(String resp) throws IOException, SOAPException{
 		//StringBuilder configXML = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		InputStream is = new ByteArrayInputStream(resp.toString().getBytes());

@@ -8,15 +8,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-
 import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
-
 import org.anmat.model.TransaccionAnmat;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import com.inssjp.webservice.business.TransaccionDTO;
 
 public class Anmat {
 	
@@ -46,7 +40,6 @@ public class Anmat {
 		return response;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void crearConexionBase() {
 		HttpURLConnection con = null;
 		try {

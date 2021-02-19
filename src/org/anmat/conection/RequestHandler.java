@@ -1,49 +1,25 @@
 package org.anmat.conection;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.LinkedList;
+
 import java.util.List;
-
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
-
 import org.anmat.model.TransaccionAnmat;
 
-import com.inssjp.webservice.business.TransaccionDTO;
 
 public class RequestHandler {
 
 	private final static String  USER_HEADER = "testwservice";
 	private final static String  PWD_HEADER = "testwservicepsw";
-	
-	private List<TransaccionDTO> transac = new LinkedList<TransaccionDTO>();
-	
+		
 	private StringBuilder header = new StringBuilder();
 		
 	private Anmat anmat;
 	
+	private StringBuilder headerEnv = new StringBuilder();
+	
 	public RequestHandler(Anmat anmat){
-		this.cargarHeader();
 		this.anmat = anmat;
 	}
 	
-	public void cargarHeader(){
-		//en verdad se inserta una linea mas que el header
-		StringBuilder header = new StringBuilder(""
-				+ "\r\n <soap:Header>"
-				+ "\r\n <wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
-					+ "\r\n <wsse:UsernameToken wsu:Id=\"UsernameToken-3\" xmlns:wsu=\"http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
-					+ "\r\n <wsse:Username>"+USER_HEADER+"</wsse:Username>"
-					+ "\r\n <wsse:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\">"+PWD_HEADER+"</wsse:Password>"
-					+ "\r\n </wsse:UsernameToken>"
-				+ "\r\n </wsse:Security>"
-				+ "\r\n </soap:Header>");
-		
-		this.header = header;
-		
-	}
 	
 	public List<String> buildMedicalDataRequest(String cuit){
 		StringBuilder body = new StringBuilder(""
@@ -56,7 +32,7 @@ public class RequestHandler {
 			+ "\r\n </soap:Body>");
 		this.anmat.crearConexionBase();
 		try {
-			return this.anmat.enviarRequest(this.armarConsulta(body.toString()));
+			return this.anmat.enviarRequest(this.armarConsultaSoap(body.toString()));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,22 +87,59 @@ public class RequestHandler {
 		this.anmat.crearConexionBase();
 		
 		try {
-			return this.anmat.enviarRequest(this.armarConsulta(body.toString()));
+			return this.anmat.enviarRequest(this.armarConsultaSoapEnv(body.toString()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		} 
 	}
 
-	private String armarConsulta(String body) {
+	private String armarConsultaSoap(String body) {
 		
 		StringBuilder soapEnvelopeOpen = new StringBuilder("<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n ");
-		soapEnvelopeOpen.append(this.header).append(body).append("\r\n</soap:Envelope>");
-		
+		soapEnvelopeOpen.append(this.getHeader()).append(body).append("\r\n</soap:Envelope>");
 		return soapEnvelopeOpen.toString();
 	}
 	
+	private String armarConsultaSoapEnv(String body) {
+		
+		StringBuilder soapEnvelopeOpen = new StringBuilder("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:bus=\"http://business.webservice.inssjp.com/\">\r\n ");
+		soapEnvelopeOpen.append(this.getHeaderEnv()).append(body).append("\r\n</soapenv:Envelope>");
+		return soapEnvelopeOpen.toString();
+	}
 	
+	private StringBuilder getHeader(){
+		StringBuilder header = new StringBuilder(""
+				+ "\r\n <soap:Header>"
+				+ "\r\n <wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+					+ "\r\n <wsse:UsernameToken wsu:Id=\"UsernameToken-3\" xmlns:wsu=\"http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+					+ "\r\n <wsse:Username>"+USER_HEADER+"</wsse:Username>"
+					+ "\r\n <wsse:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\">"+PWD_HEADER+"</wsse:Password>"
+					+ "\r\n </wsse:UsernameToken>"
+				+ "\r\n </wsse:Security>"
+				+ "\r\n </soap:Header>");
+		
+		this.header = header;
+		return header;
+	}
+	
+	private StringBuilder getHeaderEnv() {
+		StringBuilder headerEnv = new StringBuilder(""
+				+ "\r\n <soapenv:Header>"
+				+ "\r\n <wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+					+ "\r\n <wsse:UsernameToken wsu:Id=\"UsernameToken-3\" xmlns:wsu=\"http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">"
+					+ "\r\n <wsse:Username>"+USER_HEADER+"</wsse:Username>"
+					+ "\r\n <wsse:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\">"+PWD_HEADER+"</wsse:Password>"
+					+ "\r\n </wsse:UsernameToken>"
+				+ "\r\n </wsse:Security>"
+				+ "\r\n </soapenv:Header>");
+		
+		return this.headerEnv = headerEnv;
+			
+		
+	}
+
+	@SuppressWarnings("unused")
 	private String constructRequestTest() {
 		String reqXML = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
 					+ "\r\n <soap:Header>"
