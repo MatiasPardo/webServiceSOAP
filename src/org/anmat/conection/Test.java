@@ -13,7 +13,7 @@ public class Test {
 	public static void main(String[] args) throws MalformedURLException{
 		
 		pruebaGetMedico();
-		//pruebaTrazaProduct();
+		pruebaTrazaProduct();
 
 
 	}
@@ -39,10 +39,13 @@ public class Test {
 		miAnmat.getResponse().setKeysSoapXML("d_error");
 		miAnmat.getResponse().setKeysSoapXML("faultstring");
 		miAnmat.getResponse().setKeysSoapXML("faultcode");
+		
 		List<TransaccionAnmat> transs = new LinkedList<TransaccionAnmat>(); 
 		transs.add(transaccion);
 		for(String mens: miAnmat.informarProducto(transs)){
-				System.out.println(mens);
+				if(mens != null){
+					System.out.println(mens);
+				}
 			}
 	}
 
@@ -55,8 +58,10 @@ public class Test {
 		miAnmat.getResponse().setKeysSoapXML("nroMatricula");
 		
 		for(String mens: miAnmat.getMedico("20134739445")){
+			if(mens != null){
 				System.out.println(mens);
 			}
+		}
 	}
 
 	
