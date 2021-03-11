@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import javax.xml.soap.SOAPException;
+
+import org.anmat.model.ResponseAnmat;
 import org.anmat.model.TransaccionAnmat;
 
 
@@ -28,15 +30,35 @@ public class Anmat {
 	
 	private ResponseHandler response = new ResponseHandler();
 
-	public List<String> getMedico(String cuit){
+	public ResponseAnmat getMedico(String cuit){
 		RequestHandler request = new RequestHandler(this);
-		List<String> response = request.buildMedicalDataRequest("20134739445");
+		ResponseAnmat response = request.buildMedicalDataRequest(cuit);
 		return response;
 	}
 	
-	public List<String> informarProducto(List<TransaccionAnmat> transacciones){
+	public ResponseAnmat informarProducto(List<TransaccionAnmat> transacciones){
+		TransaccionAnmat transaccion = transacciones.get(0);
 		RequestHandler request = new RequestHandler(this);
-		List<String> response = request.buildMedicalProductRequest(transacciones);
+		ResponseAnmat response = request.buildMedicalProductRequest(transaccion);
+		return response;
+	}
+	
+	@Deprecated
+	public ResponseAnmat informarProductos(List<TransaccionAnmat> transacciones){
+		RequestHandler request = new RequestHandler(this);
+		ResponseAnmat response = request.buildMedicalProductsRequest(transacciones);//cambiar a product
+		return response;
+	}
+	
+	public ResponseAnmat cancelarTransaccion(String transaccion){
+		RequestHandler request = new RequestHandler(this);
+		ResponseAnmat response = request.buildCancelTransacc(transaccion);
+		return response;
+	}
+	
+	public ResponseAnmat cancelarTransaccionParcial(String transaccion, String gtin, String serie){
+		RequestHandler request = new RequestHandler(this);
+		ResponseAnmat response = request.buildCancelTransaccParcial(transaccion,gtin, serie);
 		return response;
 	}
 	
@@ -69,14 +91,14 @@ public class Anmat {
 		this.enProduccion = enProduccion;
 	}
 	
-	public List<String> enviarRequest(String request) throws IOException, SOAPException {
+	public ResponseAnmat enviarRequest(String request) throws IOException, SOAPException {
 		
 		String reqXML = request;
 		OutputStream reqStream = null;
 		BufferedReader reader = null;
 		try {
 			reqStream = conexion.getOutputStream ();
-			reqStream.write (reqXML.getBytes ());
+			reqStream.write (reqXML.getBytes());
 			InputStream resStream = conexion.getInputStream();
 			reader = new BufferedReader(new InputStreamReader(resStream));;
 			

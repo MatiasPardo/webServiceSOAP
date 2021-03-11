@@ -2,67 +2,56 @@ package org.anmat.conection;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.List;//C:\Desarrollo\MiOpenxava\openxava-6.4\studio\jre
 import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
+
+import org.anmat.model.InformarProductoResponse;
+import org.anmat.model.ResponseAnmat;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class ResponseHandler {
 	
 	private List<String> keysSoapXML = new LinkedList<String>();
-	
 
-	public SOAPMessage pruebasXMLParser(String resp) throws IOException, SOAPException{
-		//StringBuilder configXML = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		InputStream is = new ByteArrayInputStream(resp.toString().getBytes());
-		SOAPMessage request = MessageFactory.newInstance().createMessage(null, is);
-		return request;
-	}
-
-	public List<String> procesarResponse(String envelopeSoap) throws IOException, SOAPException{
+	public ResponseAnmat procesarResponse(String envelopeSoap){
 		InputStream is = new ByteArrayInputStream(envelopeSoap.toString().getBytes());
-		SOAPMessage responseSoap = MessageFactory.newInstance().createMessage(null, is);
-		List<String> mensages = new LinkedList<String>();
-		
-		
-		/*
-		 * 
-		 */
-		
-		responseSoap.writeTo(System.out);
-		System.out.print("\n");
-		
-		/*
-		 * 
-		 */
-		
-		
+		SOAPMessage responseSoap = null;		
+		ResponseAnmat resp = null;
 		try {
-
-			NodeList nodos = responseSoap.getSOAPBody().getChildNodes();
-			
-			if(this.getKeysSoapXML().size() == 0){
-				mensages.add(iterarNodosSoap(nodos,"c_error"));
-				mensages.add(iterarNodosSoap(nodos,"d_error"));
-			}
-			for(String mens: this.getKeysSoapXML()){
-				mensages.add(iterarNodosSoap(nodos,mens));
-			}
-			
-			
+			responseSoap = MessageFactory.newInstance().createMessage(null, is);
+			resp = this.convertirObject(responseSoap);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return mensages;
+		return resp;
 	}
 	
-	private String iterarNodosSoap(NodeList nodos,String clave) throws Exception {
+	private ResponseAnmat convertirObject(SOAPMessage responseSoap) throws Exception {
+		
+		NodeList nodos = responseSoap.getSOAPBody().getChildNodes();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		responseSoap.writeTo(out);
+		String respFull = new String(out.toByteArray());
+		ResponseAnmat resp = new InformarProductoResponse();
+		List<String> errors = new LinkedList<String>();
+		errors.addAll(searchListFromNodosSoap(nodos, "d_error"));
+		resp.setDescError(errors);
+		resp.setCodFalloXML(searchIteratorNodosSoap(nodos, "faultcode"));
+		resp.setDescFalloXML(searchIteratorNodosSoap(nodos, "faultstring"));
+		resp.setCodigoTransaccion(searchIteratorNodosSoap(nodos, "codigoTransaccion"));
+		resp.setHayErrores((!(resp.getDescError() == null) || !(resp.getCodFalloXML() == null)));
+		resp.setResponseFull(respFull);
+		
+		return resp;
+	}
+
+	private String searchIteratorNodosSoap(NodeList nodos,String clave) throws Exception {
 		String value = null;
 		for(int i = 0; i < nodos.getLength() ;i++){
 			if(nodos.item(i) != null){
@@ -76,7 +65,7 @@ public class ResponseHandler {
 						break;
 					}
 				}else if(nodo.getChildNodes().getLength() > 0){
-					value = iterarNodosSoap(nodo.getChildNodes(),clave); 
+					value = searchIteratorNodosSoap(nodo.getChildNodes(),clave); 
 					if(value != null){
 						break;
 					}
@@ -87,14 +76,38 @@ public class ResponseHandler {
 		return value;
 	}
 
+	private List<String> searchListFromNodosSoap(NodeList nodos,String clave) throws Exception {
+		String value = null;
+		List<String> valores = new LinkedList<String>();
+		for(int i = 0; i < nodos.getLength() ;i++){
+			if(nodos.item(i) != null){
+				Node nodo = nodos.item(i);
+				if(clave.equals(nodo.getLocalName())){
+					if(nodo.getChildNodes().getLength() >= 1){
+						value = nodo.getFirstChild().getNodeValue();
+						if(value == null){
+							throw new Exception("El nodo no tiene valores, solo otros nodos");
+						}
+						valores.add(value);
+					}
+				}else if(nodo.getChildNodes().getLength() > 0){
+					valores.addAll(searchListFromNodosSoap(nodo.getChildNodes(),clave)); 
+				}
+					
+			}
+		}
+		return valores;
+	}
+
 	public List<String> getKeysSoapXML() {
 		return keysSoapXML;
 	}
 
-	public void setKeysSoapXML(List<String> keysSoapXML) {
+	public void addPropertys(List<String> keysSoapXML) {
 		this.keysSoapXML.addAll(keysSoapXML);
 	}
-	public void setKeysSoapXML(String keysSoapXML) {
+	
+	public void addProperty(String keysSoapXML) {
 		this.keysSoapXML.add(keysSoapXML);
 	}
 }

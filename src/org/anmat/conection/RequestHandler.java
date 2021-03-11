@@ -2,6 +2,8 @@ package org.anmat.conection;
 
 
 import java.util.List;
+
+import org.anmat.model.ResponseAnmat;
 import org.anmat.model.TransaccionAnmat;
 
 
@@ -10,18 +12,16 @@ public class RequestHandler {
 	private final static String  USER_HEADER = "testwservice";
 	private final static String  PWD_HEADER = "testwservicepsw";
 		
-	private StringBuilder header = new StringBuilder();
 		
 	private Anmat anmat;
 	
-	private StringBuilder headerEnv = new StringBuilder();
 	
 	public RequestHandler(Anmat anmat){
 		this.anmat = anmat;
 	}
 	
 	
-	public List<String> buildMedicalDataRequest(String cuit){
+	public ResponseAnmat buildMedicalDataRequest(String cuit){
 		StringBuilder body = new StringBuilder(""
 				+ "<soap:Body>"
 				+ "\r\n <ns1:getMedico xmlns:ns1=\"http://business.WebServiceSenasa.inssjp.com/\">"
@@ -40,8 +40,47 @@ public class RequestHandler {
 		}
 	}
 	
-	public List<String> buildMedicalProductRequest(List<TransaccionAnmat> transacciones){
-		TransaccionAnmat tr = transacciones.get(0);
+	public ResponseAnmat buildCancelTransacc(String codigoTransaccion){
+		StringBuilder body = new StringBuilder(""
+				+ "<soap:Body>"
+				+ "\r\n <ns1:sendCancelacTransacc xmlns:ns1=\"http://business.WebServiceSenasa.inssjp.com/\">"
+					+ "\r\n <transaccion>"+codigoTransaccion+"</transaccion>"
+					+ "\r\n <usuario>"+this.anmat.getUser()+"</usuario>"
+					+ "\r\n <password>"+this.anmat.getPwd()+"</password>"
+				+ "\r\n </ns1:sendCancelacTransacc>"
+			+ "\r\n </soap:Body>");
+		this.anmat.crearConexionBase();
+		try {
+			return this.anmat.enviarRequest(this.armarConsultaSoap(body.toString()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ResponseAnmat buildCancelTransaccParcial(String codigoTransaccion, String gtin, String serie){
+		StringBuilder body = new StringBuilder(""
+				+ "<soap:Body>"
+				+ "\r\n <ns1:sendCancelacTransaccParcial xmlns:ns1=\"http://business.WebServiceSenasa.inssjp.com/\">"
+					+ "\r\n <usuario>"+this.anmat.getUser()+"</usuario>"
+					+ "\r\n <password>"+this.anmat.getPwd()+"</password>"
+					+ "\r\n <transaccion>"+codigoTransaccion+"</transaccion>"
+					+ "\r\n <gtin>"+gtin+"</gtin>"
+					+ "\r\n <serie>"+serie+"</serie>"
+				+ "\r\n </ns1:sendCancelacTransaccParcial>"
+			+ "\r\n </soap:Body>");
+		this.anmat.crearConexionBase();
+		try {
+			return this.anmat.enviarRequest(this.armarConsultaSoap(body.toString()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ResponseAnmat buildMedicalProductRequest(TransaccionAnmat tr){
 		StringBuilder body = new StringBuilder(""
 				+ "<soapenv:Body>"
 				+"\r\n <bus:informarProducto>"
@@ -50,7 +89,7 @@ public class RequestHandler {
 //						+"\r\n <calle></calle>"
 //						+"\r\n <codHiv></codHiv>"
 //						+"\r\n <codPostal></codPostal>"
-//						+"\r\n <cuitMedico>"+""+"</cuitMedico>"
+						+"\r\n <cuitMedico>"+tr.getCuitMedico()+"</cuitMedico>"
 //						+"\r\n <departamento>"+""+"</departamento>"
 //						+"\r\n <fechaNacimiento>"+""+"</fechaNacimiento>"
 						+"\r\n <glnDestino>"+tr.getgLNDestino()+"</glnDestino>"
@@ -93,6 +132,68 @@ public class RequestHandler {
 			return null;
 		} 
 	}
+	public ResponseAnmat buildMedicalProductsRequest(List<TransaccionAnmat> transacciones){
+		StringBuilder body = new StringBuilder(""
+				+ "<soapenv:Body>"
+				+"\r\n <bus:informarProducto>"
+					);
+				for(int i = 0;i<transacciones.size();i++){
+					TransaccionAnmat tr = transacciones.get(i);
+						body.append(""
+								+"\r\n <transacciones>"
+//								+"\r\n <apellidos></apellidos>"
+//								+"\r\n <calle></calle>"
+//								+"\r\n <codHiv></codHiv>"
+//								+"\r\n <codPostal></codPostal>"
+								+"\r\n <cuitMedico>"+tr.getCuitMedico()+"</cuitMedico>"
+//								+"\r\n <departamento>"+""+"</departamento>"
+//								+"\r\n <fechaNacimiento>"+""+"</fechaNacimiento>"
+								+"\r\n <glnDestino>"+tr.getgLNDestino()+"</glnDestino>"
+								+"\r\n <glnOrigen>"+tr.getgLNOrigen()+"</glnOrigen>"
+								+"\r\n <gtin>"+tr.getgTIN()+"</gtin>"
+								+"\r\n <idEvento>"+tr.getIdEvento()+"</idEvento>"
+//								+"\r\n <idMotivoDevolucion>"+""+"</idMotivoDevolucion>"
+//								+"\r\n <idObraSocial>"+""+"</idObraSocial>"
+//								+"\r\n <idTipoDocumento>"+""+"</idTipoDocumento>"
+//								+"\r\n <localidad>"+""+"</localidad>"
+								+"\r\n <lote>"+tr.getLote()+"</lote>"
+//								+"\r\n <nombres>"+""+"</nombres>"
+//								+"\r\n <nroAfiliado>"+""+"</nroAfiliado>"
+//								+"\r\n <nroCalle>"+""+"</nroCalle>"
+//								+"\r\n <nroDocumento>"+""+"</nroDocumento>"
+								+"\r\n <nroFactura>"+tr.getNroFactura()+"</nroFactura>"
+								+"\r\n <nroRemito>"+tr.getNroRemito()+"</nroRemito>"
+								+"\r\n <nroSerial>"+tr.getNroSerial()+"</nroSerial>"
+//								+"\r\n <otroMotivoDevolucion>"+""+"</otroMotivoDevolucion>"
+//								+"\r\n <piso>"+""+"</piso>"
+//								+"\r\n <provincia>"+""+"</provincia>"
+//								+"\r\n <sexo>"+""+"</sexo>"
+//								+"\r\n <telefono>"+""+"</telefono>"
+								+"\r\n <vencimiento>"+tr.getVencimiento()+"</vencimiento>"
+								+"\r\n <fEvento>"+tr.getfEvento()+"</fEvento>"
+								+"\r\n <hEvento>"+tr.gethEvento()+"</hEvento>"
+//								+"\r\n <codDiagnostico>"+""+"</codDiagnostico>"
+								+"\r\n </transacciones>"
+						+ "");
+				}
+						body.append(
+						"\r\n <usuario>"+this.anmat.getUser()+"</usuario>"
+						+"\r\n <password>"+this.anmat.getPwd()+"</password>"
+					+"\r\n </bus:informarProducto>"
+				+"\r\n</soapenv:Body>");
+		
+		this.anmat.crearConexionBase();
+		
+		try {
+			return this.anmat.enviarRequest(this.armarConsultaSoapEnv(body.toString()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
+	
+	
+	
 
 	private String armarConsultaSoap(String body) {
 		
@@ -119,7 +220,6 @@ public class RequestHandler {
 				+ "\r\n </wsse:Security>"
 				+ "\r\n </soap:Header>");
 		
-		this.header = header;
 		return header;
 	}
 	
@@ -134,7 +234,7 @@ public class RequestHandler {
 				+ "\r\n </wsse:Security>"
 				+ "\r\n </soapenv:Header>");
 		
-		return this.headerEnv = headerEnv;
+		return headerEnv;
 			
 		
 	}

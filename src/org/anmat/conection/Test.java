@@ -4,6 +4,8 @@ import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.anmat.model.InformarProductoResponse;
+import org.anmat.model.ResponseAnmat;
 import org.anmat.model.TransaccionAnmat;
 
 
@@ -12,56 +14,65 @@ public class Test {
 
 	public static void main(String[] args) throws MalformedURLException{
 		
-		pruebaGetMedico();
+		//pruebaGetMedico();
 		pruebaTrazaProduct();
 
 
 	}
 	
 	private static void pruebaTrazaProduct() {
-//		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
-		Anmat miAnmat = new Anmat("pruebasws1","pruebasws");
-		miAnmat.setEnProduccion(false);
+		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
+//		Anmat miAnmat = new Anmat("pruebasws","pruebasws");
+//		miAnmat.setEnProduccion(false);
 		
-		TransaccionAnmat transaccion = new TransaccionAnmat();
-		transaccion.setfEvento("17/11/2020");
-		transaccion.sethEvento("11:17");
-		transaccion.setIdEvento(103);
-		transaccion.setgLNOrigen("7798232400004");
-		transaccion.setgTIN("05029867691614");
-		transaccion.setNroSerial("10914424659");
-		transaccion.setNroRemito("R0004-00046594");
-		transaccion.setgLNDestino("9960110390006");
-		transaccion.setLote("724");
-		transaccion.setVencimiento("07/10/2024");
+		TransaccionAnmat transaccion1 = new TransaccionAnmat();
+		transaccion1.setfEvento("11/03/2021");
+		transaccion1.sethEvento("10:10");
+		transaccion1.setIdEvento(118);
+		transaccion1.setgLNOrigen("7798232400004");
+		transaccion1.setgTIN("0898202001310");
+		transaccion1.setNroSerial("O14019209B-55");
+		transaccion1.setNroRemito("00001-00047978");
+		transaccion1.setCuitMedico("20178021606");
+		transaccion1.setLote("735");
+		transaccion1.setVencimiento("30/04/2023");
 		
-		miAnmat.getResponse().setKeysSoapXML("c_error");
-		miAnmat.getResponse().setKeysSoapXML("d_error");
-		miAnmat.getResponse().setKeysSoapXML("faultstring");
-		miAnmat.getResponse().setKeysSoapXML("faultcode");
-		
+		TransaccionAnmat transaccion2 = new TransaccionAnmat();
+		transaccion2.setfEvento("11/03/2021");
+		transaccion2.sethEvento("10:10");
+		transaccion2.setIdEvento(118);
+		transaccion2.setgLNOrigen("7798232400004");
+		transaccion2.setgTIN("0898202001013");
+		transaccion2.setNroSerial("O13819206249");
+		transaccion2.setNroRemito("R0000-00048140");
+		transaccion2.setCuitMedico("23142235609");
+		transaccion2.setLote("757");
+		transaccion2.setVencimiento("30/04/2023");
+				
 		List<TransaccionAnmat> transs = new LinkedList<TransaccionAnmat>(); 
-		transs.add(transaccion);
-		for(String mens: miAnmat.informarProducto(transs)){
-				if(mens != null){
-					System.out.println(mens);
-				}
-			}
+		transs.add(transaccion2);
+		transs.add(transaccion1);
+		InformarProductoResponse traza = (InformarProductoResponse) miAnmat.informarProductos(transs);
+		System.out.println("Hay errores: "+traza.hayErrores()+"\n");
+		System.out.println(traza.getCodigoTransaccion()+"\n");
+		System.out.println(traza.getDescError()+"\n");
+
+		System.out.println(traza.getResponseFull());
+
 	}
 
 	private static void pruebaGetMedico() {
-		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
-//		Anmat miAnmat = new Anmat("pruebasws1","pruebasws");
-		//miAnmat.setEnProduccion(false);		
+//		Anmat miAnmat = new Anmat("7798232400004","Trazaisko1");
+		Anmat miAnmat = new Anmat("Usuario","Pass");
+		miAnmat.setEnProduccion(false);		
 		
-		miAnmat.getResponse().setKeysSoapXML("apellidoNombre");
-		miAnmat.getResponse().setKeysSoapXML("nroMatricula");
+		miAnmat.getResponse().addProperty("apellidoNombre");
+		miAnmat.getResponse().addProperty("nroMatricula");
 		
-		for(String mens: miAnmat.getMedico("20134739445")){
-			if(mens != null){
-				System.out.println(mens);
-			}
-		}
+		ResponseAnmat traza = miAnmat.getMedico("20134739445");
+		System.out.println("Hay errores: "+traza.hayErrores());
+		System.out.println(traza.getResponseFull());
+		
 	}
 
 	

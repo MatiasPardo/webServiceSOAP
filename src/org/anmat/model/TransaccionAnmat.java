@@ -31,7 +31,7 @@ public class TransaccionAnmat {
 	private String otroMotivoDevolucion;
 
 	public String getgLNDestino() {
-		return gLNDestino;
+		return validarCadena(gLNDestino);
 	}
 
 	public void setgLNDestino(String gLNDestino) {
@@ -39,7 +39,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getgLNOrigen() {
-		return gLNOrigen;
+		return validarCadena(gLNOrigen);
 	}
 
 	public void setgLNOrigen(String gLNOrigen) {
@@ -47,7 +47,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getgTIN() {
-		return gTIN;
+		return validarCadena(gTIN);
 	}
 
 	public void setgTIN(String gTIN) {
@@ -63,7 +63,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getVencimiento() {
-		return vencimiento;
+		return validarCadena(vencimiento);
 	}
 
 	public void setVencimiento(String vencimiento) {
@@ -71,7 +71,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getfEvento() {
-		return fEvento;
+		return validarCadena(fEvento);
 	}
 
 	public void setfEvento(String fEvento) {
@@ -79,7 +79,7 @@ public class TransaccionAnmat {
 	}
 
 	public String gethEvento() {
-		return hEvento;
+		return validarCadena(hEvento);
 	}
 
 	public void sethEvento(String hEvento) {
@@ -87,7 +87,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getCuitMedico() {
-		return cuitMedico;
+		return validarCadena(cuitMedico);
 	}
 
 	public void setCuitMedico(String cuitMedico) {
@@ -103,7 +103,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getNroFactura() {
-		return nroFactura;
+		return validarCadena(nroFactura);
 	}
 
 	public void setNroFactura(String nroFactura) {
@@ -111,7 +111,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getNroRemito() {
-		return nroRemito;
+		return validarCadena(nroRemito);
 	}
 
 	public void setNroRemito(String nroRemito) {
@@ -119,7 +119,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getNroSerial() {
-		return nroSerial;
+		return validarCadena(nroSerial);
 	}
 
 	public void setNroSerial(String nroSerial) {
@@ -127,7 +127,7 @@ public class TransaccionAnmat {
 	}
 
 	public String getLote() {
-		return lote;
+		return validarCadena(lote);
 	}
 
 	public void setLote(String lote) {
@@ -135,13 +135,19 @@ public class TransaccionAnmat {
 	}
 
 	public String getOtroMotivoDevolucion() {
-		return otroMotivoDevolucion;
+		return validarCadena(otroMotivoDevolucion);
 	}
 
 	public void setOtroMotivoDevolucion(String otroMotivoDevolucion) {
 		this.otroMotivoDevolucion = otroMotivoDevolucion;
 	}
 	
+	private String validarCadena(String cadena) {
+		if(cadena == null){
+			cadena = "";
+		}
+		return cadena;
+	}
 	
 	
 }
