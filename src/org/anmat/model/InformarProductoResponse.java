@@ -29,7 +29,11 @@ public class InformarProductoResponse implements ResponseAnmat{
 
 	@Override
 	public List<String> getDescError() {
-		return this.descError;
+		if(this.descError != null && this.descError.isEmpty()){
+			return null;
+		}else{
+			return this.descError;
+		}
 	}
 
 	@Override
@@ -49,7 +53,11 @@ public class InformarProductoResponse implements ResponseAnmat{
 
 	@Override
 	public String getDescFalloXML() {
-		return this.descFalloXML;
+		if(this.descFalloXML != null && this.descFalloXML.isEmpty()){
+			return null;
+		}else{
+			return this.descFalloXML;
+		}
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class Anmat {
 	private HttpURLConnection conexion;
 	
 	private ResponseHandler response = new ResponseHandler();
-
+	
 	public ResponseAnmat getMedico(String cuit){
 		RequestHandler request = new RequestHandler(this);
 		ResponseAnmat response = request.buildMedicalDataRequest(cuit);
@@ -43,10 +43,9 @@ public class Anmat {
 		return response;
 	}
 	
-	@Deprecated
 	public ResponseAnmat informarProductos(List<TransaccionAnmat> transacciones){
 		RequestHandler request = new RequestHandler(this);
-		ResponseAnmat response = request.buildMedicalProductsRequest(transacciones);//cambiar a product
+		ResponseAnmat response = request.buildMedicalProductsRequest(transacciones);
 		return response;
 	}
 	
