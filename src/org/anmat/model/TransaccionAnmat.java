@@ -94,8 +94,12 @@ public class TransaccionAnmat {
 		this.cuitMedico = cuitMedico;
 	}
 
-	public int getIdMotivoDevolucion() {
-		return idMotivoDevolucion;
+	public String getIdMotivoDevolucion() {
+		if(this.idMotivoDevolucion == 0){
+			return ""; 
+		}else{
+			return String.valueOf(idMotivoDevolucion);
+		}
 	}
 
 	public void setIdMotivoDevolucion(int idMotivoDevolucion) {

@@ -2,30 +2,84 @@ package org.anmat.model;
 
 import java.util.List;
 
-public interface ResponseAnmat {
+public class ResponseAnmat {
 	
-	public List<String> getDescError();
-
-	public void setDescError(List<String> descError);
-
-	public String getCodFalloXML();
-
-	public void setCodFalloXML(String codFalloXML);
-
-	public String getDescFalloXML();
-
-	public void setDescFalloXML(String descFalloXML);
+	private List<String> descError;
 	
-	public boolean hayErrores();
-
-	public void setHayErrores(boolean hayErrores);
-
-	public String getResponseFull();
-
-	public void setResponseFull(String responseFull);
-
-	public void setCodigoTransaccion(String searchIteratorNodosSoap);
+	private String codFalloXML;
 	
-	public String getCodigoTransaccion();
+	private String descFalloXML;
+	
+	private boolean hayErrores;
+	
+	private String idTransaccion;
+	
+	private String responseFull;
+
+	private String codigoTransaccion;
+	
+	public String getIdTransaccion() {
+		return idTransaccion;
+	}
+	
+	public void setIdTransaccion(String idTransaccion) {
+		this.idTransaccion = idTransaccion;
+	}
+
+	public List<String> getDescError() {
+		if(this.descError != null && this.descError.isEmpty()){
+			return null;
+		}else{
+			return this.descError;
+		}
+	}
+
+	public void setDescError(List<String> descError) {
+		this.descError = descError;
+	}
+
+	public String getCodFalloXML() {
+		return this.codFalloXML;
+	}
+
+	public void setCodFalloXML(String codFalloXML) {
+		this.codFalloXML = codFalloXML;
+	}
+
+	public String getDescFalloXML() {
+		if(this.descFalloXML != null && this.descFalloXML.isEmpty()){
+			return null;
+		}else{
+			return this.descFalloXML;
+		}
+	}
+
+	public void setDescFalloXML(String descFalloXML) {
+		this.descFalloXML = descFalloXML;
+	}
+
+	public boolean hayErrores() {
+		return this.hayErrores;
+	}
+
+	public void setHayErrores(boolean hayErrores) {
+		this.hayErrores= hayErrores;		
+	}
+
+	public String getResponseFull() {
+		return this.responseFull;
+	}
+
+	public void setResponseFull(String responseFull) {
+		this.responseFull = responseFull;
+	}
+
+	public void setCodigoTransaccion(String codigoTransaccion) {
+		this.codigoTransaccion = codigoTransaccion;
+	}
+
+	public String getCodigoTransaccion() {
+		return this.codigoTransaccion;
+	}
 
 }

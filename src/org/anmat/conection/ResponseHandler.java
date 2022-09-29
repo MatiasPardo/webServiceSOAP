@@ -5,11 +5,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.LinkedList;
-import java.util.List;//C:\Desarrollo\MiOpenxava\openxava-6.4\studio\jre
+import java.util.List;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPMessage;
-
-import org.anmat.model.InformarProductoResponse;
 import org.anmat.model.ResponseAnmat;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -38,7 +36,7 @@ public class ResponseHandler {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		responseSoap.writeTo(out);
 		String respFull = new String(out.toByteArray());
-		ResponseAnmat resp = new InformarProductoResponse();
+		ResponseAnmat resp = new ResponseAnmat();
 		List<String> errors = new LinkedList<String>();
 		errors.addAll(searchListFromNodosSoap(nodos, "d_error"));
 		resp.setDescError(errors);

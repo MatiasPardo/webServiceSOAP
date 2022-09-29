@@ -3,8 +3,6 @@ package org.anmat.conection;
 import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.anmat.model.InformarProductoResponse;
 import org.anmat.model.ResponseAnmat;
 import org.anmat.model.TransaccionAnmat;
 
@@ -52,7 +50,7 @@ public class Test {
 		List<TransaccionAnmat> transs = new LinkedList<TransaccionAnmat>(); 
 		transs.add(transaccion2);
 		transs.add(transaccion1);
-		InformarProductoResponse traza = (InformarProductoResponse) miAnmat.informarProductos(transs);
+		ResponseAnmat traza = miAnmat.informarProductos(transs);
 		System.out.println("Hay errores: "+traza.hayErrores()+"\n");
 		System.out.println(traza.getCodigoTransaccion()+"\n");
 		System.out.println(traza.getDescError()+"\n");
